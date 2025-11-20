@@ -71,15 +71,17 @@ scripts.each() { fileName, className ->
     }
 }
 
-// Avoid duplicate files in distribution
-installDist {
-    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-}
-distZip {
-    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-}
-distTar {
-    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+// Add custom scripts to distribution
+distributions {
+    main {
+        contents {
+            into('bin') {
+                from(scripts.keySet().collect { tasks.named(it) })
+                fileMode = 0755
+                duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+            }
+        }
+    }
 }
 
 task sourceJar(type: Jar) {
