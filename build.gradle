@@ -3,7 +3,6 @@ version '0.1.0'
 
 apply plugin: 'java'
 apply plugin: 'antlr'
-apply plugin: 'maven'
 apply plugin: 'maven-publish'
 
 repositories {
@@ -46,11 +45,17 @@ compileJava {
 }
 
 apply plugin: 'application'
+
+application {
+    mainClass = 'ca.waterloo.dsg.graphflow.runner.dataset.DatasetSerializer'
+}
+
 // Disable the default assembly tasks.
 startScripts.enabled = false
 run.enabled = false
 distZip.enabled = false
 distTar.enabled = false
+
 // Create the executables.
 def scripts = [
     'dataset-serializer'  : 'ca.waterloo.dsg.graphflow.runner.dataset.DatasetSerializer',
@@ -59,15 +64,22 @@ def scripts = [
 ]
 scripts.each() { fileName, className ->
     tasks.create(name: fileName, type: CreateStartScripts) {
-        mainClassName = className
+        mainClass = className
         applicationName = fileName
         outputDir = new File(project.buildDir, 'scripts')
-        classpath = jar.outputs.files + project.configurations.runtime
+        classpath = jar.outputs.files + project.configurations.runtimeClasspath
     }
-    applicationDistribution.into("bin") {
-        from(tasks[fileName])
-        fileMode = 0755
-    }
+}
+
+// Avoid duplicate files in distribution
+installDist {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
+distZip {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
+distTar {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
 
 task sourceJar(type: Jar) {
