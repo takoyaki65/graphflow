@@ -1,5 +1,9 @@
 grammar Graphflow;
 
+@header {
+package ca.waterloo.dsg.graphflow.grammar;
+}
+
 graphflow : whitespace? matchPattern whitespace? (LIMIT whitespace Digits whitespace?)? (SEMICOLON whitespace?)? EOF ;
 
 matchPattern : edge ( whitespace? COMMA whitespace? edge )* ;

@@ -26,7 +26,6 @@ dependencies {
 // ANTLR4 configuration.
 generateGrammarSource {
     maxHeapSize = "64m"
-    packageName = "ca.waterloo.dsg.graphflow.grammar"
     arguments += [
         "-long-messages",                                   // show exception details
         "-visitor"                                          // generate parse tree visitor classes
